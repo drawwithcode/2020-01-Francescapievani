@@ -1,151 +1,149 @@
+//set variables
+let mySong;
+let myImage = [];
+let analyzer;
+let rateSlider;  //cursore rate
+let col1 = "blue";
+let col2 = "yellow";
+let col3 = "LightSkyBlue";
+let col4 = "red";
+let volume = 0;
+let x = 70;
+let y = 70;
+
+
+
 function preload(){
-  // put preload code here
+//image
+myImage = loadImage ("./assets/images/skate.png");
+//sound
+mySong = loadSound("./assets/sounds/dreams.mp3");
 }
 
 function setup() {
-  createCanvas(1000,1000)
-  background("teal");
-  angleMode(DEGREES);
-  // put setup code here
+createCanvas(windowWidth,windowHeight)
+background("white");
+noStroke();
+
+//analyzer
+analyzer = new p5.Amplitude();
+analyzer.setInput(mySong);
+
+//controllo amplitude musica
+rateSlider = createSlider(0, 4, 1, 0);
+rateSlider.position(windowWidth/1.5, windowHeight/1.15);
+rateSlider.style('width', '150px');
+
 }
 
 function draw() {
-  // put drawing code here
-  push();
-  translate(500,150,50);
-    strokeWeight(0.8);
-  stroke(color("blue"));
-  noFill();
-  rotate(frameCount * 8);
-  ellipse(10, 36, 45, 45);
-  pop();
+//move the center of the canvas
+translate(windowWidth / 2, windowHeight / 1.5);
 
+// if condition for the music
+if (mouseX > width/2) {
+background(color(col3));
+if (mySong.isPlaying() === false) {
+mySong.play();
+}
 
-  push();
-  translate(500,150,50);
-    strokeWeight(0.8);
-  stroke(color("orange"));
-  noFill();
-  rotate(frameCount * 8);
-  square(30, 20, 55, 20, 15, 10, 5);
-  pop();
+volume = analyzer.getLevel();
+volume = map(volume, 0, 1, 0, height);
 
-
-  push();
-  translate(500,850,50);
-    strokeWeight(0.8);
-  stroke(color("orange"));
-  noFill();
-  rotate(frameCount * 8);
-  triangle(20, 50, 90, 90, 20, 20);
-  pop();
-
-  push();
-  translate(150,500,0);
-    strokeWeight(0.8);
-  stroke(color("orange"));
-  noFill();
-  rotate(frameCount * 8);
-square(30, 20, 55);
-  pop();
-
-  push();
-  translate(150,500,0);
-    strokeWeight(0.8);
-  stroke(color("purple"));
-  noFill();
-  rotate(frameCount * 6);
-  square(30, 20, 55);
-  pop();
-
-
-
-  push();
-  translate(850,500,0);
-    strokeWeight(0.8);
-  stroke(color("blue"));
-  noFill();
-  rotate(frameCount * 8);
-  square(30, 20, 55);
-  pop();
-
-  push();
-  translate(850,500,0);
-    strokeWeight(0.8);
-  stroke(color("orange"));
-  noFill();
-  rotate(frameCount * 6);
-  square(30, 20, 55);
-  pop();
-
-  push();
-  translate(500,850,50);
-    strokeWeight(0.8);
-  stroke(color("purple"));
-  noFill();
-  rotate(frameCount * 8);
-  ellipse(20, 46, 55, 55);
-  pop();
-
-  push();
-  translate(500,850,50);
-    strokeWeight(0.8);
-  stroke(color("orange"));
-  noFill();
-  rotate(frameCount * 8);
-  line(20, 50, 90, 90, 20);
-  pop();
-
-translate(width / 2, height / 2);
-  rotate(frameCount);
-  noFill();
-  strokeWeight(1);
-  stroke(color("purple"));
-line(40, 50, 100, 100, 40);
-
-
-
-push();
-  strokeWeight(1);
-stroke(color("blue"));
-translate(40,50,0);
-rotate(frameCount * 4);
-line(100,100,50,50,100);
-pop();
-
-
-
-push();
-  strokeWeight(0.8);
-stroke(color("orange"));
-rotate(frameCount * 8);
-ellipse(56, 46, 55, 55);
-pop();
-
-push();
-  noFill();
-stroke(color("blue"));
-strokeWeight(0.2);
-translate(width / 4, height / 4);
-rotate(frameCount * 8);
-ellipse(40, 60, 100, 100, 60);
-pop();
-
-
-if(frameCount == 360){
-noLoop();
+}
+else if (mouseX < width / 2) {
+background("white");
+mySong.stop();
 
 }
 
 
 
+//image
+imageMode(CENTER);
+image(myImage, -33, -170,myImage.width/4, myImage.height/4);
 
+//titolo sfondo
+push();
+let myText = "Click on the man, move to the right and start skating!";
+fill("blue");
+textFont("Syncopate");
+textStyle(BOLD);
+textAlign(CENTER);
+textSize(20);
+text(myText,-40,-500);
+pop();
 
+//testo volume
+push();
+let myVolumeText = "SOUND RATE";
+fill("red");
+textFont("Syncopate");
+textSize(17);
+text(myVolumeText,280, 170);
+pop();
 
+//rotate the wheels
+push();
+translate(x,y)
+rotate(frameCount);
+wheel1();
+rotate(frameCount * 2);
+wheel2();
+pop();
 
+push();
+translate(-x,y)
+rotate(frameCount);
+wheel1();
+rotate(frameCount * 2);
+wheel2();
+pop();
 
+//cursore amplitude musica
+let val1 = rateSlider.value();
+mySong.rate(val1);
+volume = analyzer.getLevel();
+volume = map(volume, 0, 1, 200, 500);
 
+//ruota skateboard 1
+function wheel1() {
+//volume
+volume = analyzer.getLevel();
+volume = map(volume, 0, 1, 10, height /3);
 
+//raggi che ruotano 1 colore blu
+var start = 0;
+var stop = 30;
+for (var i = 0; i < 6; i++) {
+fill(color(col1));
+arc(0, 0, volume, volume, start, stop, PIE);
+start += 60;
+stop += 60;
+}
+}
 
+//ruota skateboard 2
+function wheel2() {
+var volume = 0;
+volume = analyzer.getLevel();
+volume = map(volume, 0, 1, 10, height /3);
 
+//raggi che ruotano 2 colore giallo
+var start = 35;
+var stop = 55;
+for (var i = 0; i < 6; i++) {
+fill(color(col2));
+arc(0, 0, volume, volume, start, stop, PIE);
+start += 60;
+stop += 60;
+
+}
+push()
+stroke(color(col4));
+strokeWeight(3);
+noFill()
+ellipse(0, 0, volume);
+pop()
+}
 }
